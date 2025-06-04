@@ -31,7 +31,7 @@ jobs:
               run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite ./soka-api/soka.sqlite
 
             - name: Retrieve Migrations from VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations/* ./soka-api/Migrations
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations ./soka-api
 
             - name: Generate random migration name
               id: generate-name
@@ -62,7 +62,7 @@ jobs:
               run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ./soka-api/soka.sqlite ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite
 
             - name: Send Migrations to VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ./soka-api/Migrations/* ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ./soka-api/Migrations ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka
 
             - name: Publish
               run: dotnet publish --output ./publish
