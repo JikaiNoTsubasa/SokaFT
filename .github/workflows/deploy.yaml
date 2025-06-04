@@ -47,6 +47,9 @@ jobs:
             - name: Apply Migration locally
               run: dotnet ef database update --project soka-api
 
+            - name: Show DB
+              run: ls -lhtr
+
             - name: Clean remote directory via SSH
               uses: appleboy/ssh-action@v1
               with:
