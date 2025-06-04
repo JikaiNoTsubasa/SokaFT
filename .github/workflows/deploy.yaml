@@ -18,11 +18,37 @@ jobs:
               with:
                 dotnet-version: 8.0.x
 
+            - name: Install SSH client
+              run: sudo apt-get install -y openssh-client
+
+            - name: Install dependencies
+              run: dotnet tool install --global dotnet-ef
+
             - name: Restore dependencies
               run: dotnet restore
 
             - name: Publish
               run: dotnet publish --output ./publish
+
+            - name: Retrieve DB from VPS
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite ./soka.sqlite
+
+            - name: Retrieve Migrations from VPS
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations ./Migrations
+
+            - name: Generate random migration name
+              id: generate-name
+              run: |
+                # Generate random migr name
+                RANDOM_NAME="Migration_$(date +%Y%m%d_%H%M%S)_$((1 + RANDOM % 1000))"
+                echo "Generated migration name: $RANDOM_NAME"
+                echo "migration_name=$RANDOM_NAME" >> $GITHUB_OUTPUT
+
+            - name: Create Migration locally
+              run: dotnet ef migrations add "${{ steps.generate-name.outputs.migration_name }}" --project soka-api
+
+            - name: Apply Migration locally
+              run: dotnet ef database update --project soka-api
 
             - name: Clean remote directory via SSH
               uses: appleboy/ssh-action@v1
@@ -30,7 +56,13 @@ jobs:
                   host: ${{ secrets.FTP_SERVER }}
                   username: ${{ secrets.FTP_USERNAME }}
                   password: ${{ secrets.FTP_PASSWORD }}
-                  script: find /home/jikai/soka -mindepth 1 -type f -not -name 'appsettings.json' -not -name 'soka.sqlite' -exec rm -f {} +
+                  script: find /home/jikai/soka -mindepth 1 -type f -not -name 'appsettings.json' -exec rm -f {} +
+
+            - name: Send DB to VPS
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:./soka.sqlite /home/jikai/soka/soka.sqlite
+
+            - name: Send Migrations to VPS
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:./Migrations /home/jikai/soka/Migrations
 
             - name: Deploy
               uses: appleboy/scp-action@v1

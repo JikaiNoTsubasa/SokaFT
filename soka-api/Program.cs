@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Apply migrations
-EFMigration.ApplyMigrations(app);
+// EFMigration.ApplyMigrations(app);
 
 // Disable CORS
 app.UseCors(x => x
