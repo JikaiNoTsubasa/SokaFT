@@ -28,10 +28,10 @@ jobs:
               run: dotnet restore
 
             - name: Retrieve DB from VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite ./soka.sqlite
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite ./soka-api/soka.sqlite
 
             - name: Retrieve Migrations from VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations ./Migrations
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations ./soka-api/Migrations
 
             - name: Generate random migration name
               id: generate-name
@@ -59,10 +59,10 @@ jobs:
                   script: find /home/jikai/soka -mindepth 1 -type f -not -name 'appsettings.json' -exec rm -f {} +
 
             - name: Send DB to VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ./soka.sqlite ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ./soka-api/soka.sqlite ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite
 
             - name: Send Migrations to VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ./Migrations ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ./soka-api/Migrations ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations
 
             - name: Publish
               run: dotnet publish --output ./publish
