@@ -30,7 +30,7 @@ jobs:
                   host: ${{ secrets.FTP_SERVER }}
                   username: ${{ secrets.FTP_USERNAME }}
                   password: ${{ secrets.FTP_PASSWORD }}
-                  script: find /home/jikai/soka -mindepth 1 -type f ! -name 'appsettings.json' -exec rm -f {} +
+                  script: find /home/jikai/soka -mindepth 1 -type f -not -name 'appsettings.json' -not -name 'soka.sqlite' -exec rm -f {} +
 
             - name: Deploy
               uses: appleboy/scp-action@v1
@@ -40,17 +40,6 @@ jobs:
                   password: ${{ secrets.FTP_PASSWORD }}
                   port: 22
                   source: './publish/*'
-                  target: '/home/jikai/soka'
-                  strip_components: 1
-
-            - name: Copy local DB to remote
-              uses: appleboy/scp-action@v1
-              with:
-                  host: ${{ secrets.FTP_SERVER }}
-                  username: ${{ secrets.FTP_USERNAME }}
-                  password: ${{ secrets.FTP_PASSWORD }}
-                  port: 22
-                  source: './soka-api/soka.sqlite'
                   target: '/home/jikai/soka'
                   strip_components: 1
 
