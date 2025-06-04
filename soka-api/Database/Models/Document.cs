@@ -13,4 +13,12 @@ public class Document : Entity
     public string? Content { get; set; }
     public DateTime? IndexedDate { get; set; }
     public bool IsIndexed { get; set; } = false;
+
+    public void MarkAsIndexed()
+    {
+        Content = "indexed";
+        IsIndexed = true;
+        IndexedDate = DateTime.UtcNow;
+        MarkAsUpdated();
+    }
 }

@@ -1,7 +1,9 @@
 using System;
 using log4net;
+using Microsoft.EntityFrameworkCore;
 using soka_api.Database;
 using soka_api.Database.Models;
+using soka_api.Indexer;
 
 namespace soka_api.JobManager;
 
@@ -42,6 +44,14 @@ public class IndexManager(SoContext ctx) : SoManager(ctx)
             _context.Documents.Add(doc);
             _context.SaveChanges();
         }
+        else
+        {
+            // Update document
+            doc.Name = name;
+            doc.Content = content;
+            doc.MarkAsUpdated();
+            _context.SaveChanges();
+        }
 
         // Add to index queue
         var item = new IndexQueueItem()
@@ -60,6 +70,13 @@ public class IndexManager(SoContext ctx) : SoManager(ctx)
 
     public List<Document> FetchDocuments()
     {
-        return [.. _context.Documents];
+        return [.. _context.Documents.Include(d => d.Application)];
+    }
+
+    public List<Document> SearchFullText(string queryText, string applicationName)
+    {
+        Application app = _context.Applications.FirstOrDefault(a => a.Name.Equals(applicationName)) ?? throw new Exception("Application not found");
+        var identifiers = LuceneEngine.SearchDocumentsIdentifiers(queryText, app);
+        return [.. _context.Documents.Include(d => d.Application).Where(d => d.Application.Name.Equals(app.Name) && identifiers.Contains(d.Identifier))];
     }
 }
