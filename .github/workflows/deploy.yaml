@@ -27,9 +27,6 @@ jobs:
             - name: Restore dependencies
               run: dotnet restore
 
-            - name: Publish
-              run: dotnet publish --output ./publish
-
             - name: Retrieve DB from VPS
               run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite ./soka.sqlite
 
@@ -63,6 +60,9 @@ jobs:
 
             - name: Send Migrations to VPS
               run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:./Migrations /home/jikai/soka/Migrations
+
+            - name: Publish
+              run: dotnet publish --output ./publish
 
             - name: Deploy
               uses: appleboy/scp-action@v1
