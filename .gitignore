@@ -1,0 +1,13 @@
+bin/
+
+obj/
+
+index/
+
+appsettings*.json
+
+mydb.*
+
+soka.*
+
+Migrations/
