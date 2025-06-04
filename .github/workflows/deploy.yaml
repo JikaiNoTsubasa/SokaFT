@@ -56,10 +56,10 @@ jobs:
                   script: find /home/jikai/soka -mindepth 1 -type f -not -name 'appsettings.json' -exec rm -f {} +
 
             - name: Send DB to VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no /home/jikai/soka/soka.sqlite ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:./soka.sqlite
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ./soka.sqlite ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/soka.sqlite
 
             - name: Send Migrations to VPS
-              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r /home/jikai/soka/Migrations ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:./Migrations
+              run: sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no -r ./Migrations ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_SERVER }}:/home/jikai/soka/Migrations
 
             - name: Publish
               run: dotnet publish --output ./publish
