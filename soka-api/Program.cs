@@ -1,6 +1,7 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
 using soka_api.Database;
+using soka_api.Global;
 using soka_api.Indexer;
 using soka_api.JobManager;
 
@@ -24,6 +25,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Apply migrations
+EFMigration.ApplyMigrations(app);
 
 // Disable CORS
 app.UseCors(x => x

@@ -9,7 +9,7 @@ namespace soka_api.JobManager;
 
 public class IndexManager(SoContext ctx) : SoManager(ctx)
 {
-    private static ILog log = LogManager.GetLogger(typeof(IndexManager));
+    private static readonly ILog log = LogManager.GetLogger(typeof(IndexManager));
 
     public IndexQueueItem AddToIndexQueue(string name, string content, string identifier, string applicationName)
     {

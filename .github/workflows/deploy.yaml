@@ -43,6 +43,17 @@ jobs:
                   target: '/home/jikai/soka'
                   strip_components: 1
 
+            - name: Copy local DB to remote
+              uses: appleboy/scp-action@v1
+              with:
+                  host: ${{ secrets.FTP_SERVER }}
+                  username: ${{ secrets.FTP_USERNAME }}
+                  password: ${{ secrets.FTP_PASSWORD }}
+                  port: 22
+                  source: './soka-api/soka.sqlite'
+                  target: '/home/jikai/soka'
+                  strip_components: 1
+
             - name: Restart soka service via SSH
               uses: appleboy/ssh-action@v1
               with:
