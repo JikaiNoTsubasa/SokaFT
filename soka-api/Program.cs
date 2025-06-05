@@ -1,5 +1,6 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
 using soka_api.Database;
 using soka_api.Global;
 using soka_api.Indexer;
@@ -20,7 +21,11 @@ builder.Services.AddScoped<IndexManager>();
 builder.Services.AddScoped<QueueManager>();
 
 builder.Services.AddHostedService<IndexerTask>();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options => {
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
