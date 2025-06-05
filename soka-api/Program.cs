@@ -17,6 +17,7 @@ builder.Services.AddDbContext<SoContext>();
 
 builder.Services.AddDbContext<SoContext>(options => options.UseSqlite("Data Source=soka.db"));
 builder.Services.AddScoped<IndexManager>();
+builder.Services.AddScoped<QueueManager>();
 
 builder.Services.AddHostedService<IndexerTask>();
 builder.Services.AddControllers();
