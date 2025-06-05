@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using SBIDotnetUtils.Extensions;
 using soka_api.Database;
 using soka_api.Database.Models;
 
